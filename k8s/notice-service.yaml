@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notice-service
+  namespace: notify
+  labels:
+    app: notice-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notice-service
+  template:
+    metadata:
+      labels:
+        app: notice-service
+    spec:
+      containers:
+        - name: notice-service
+          image: docker.io/rachelferns2005/notice-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5001
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: notify-config
+                  key: NOTICE_SERVICE_PORT
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: notify-secrets
+                  key: MONGO_URL
+          # This service does not expose a GET / health endpoint, so use a TCP check.
+          livenessProbe:
+            tcpSocket:
+              port: 5001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          # Mark the pod ready once the port is accepting connections.
+          readinessProbe:
+            tcpSocket:
+              port: 5001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          # Small resource envelope suitable for a demo deployment.
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notice-service
+  namespace: notify
+  labels:
+    app: notice-service
+spec:
+  type: ClusterIP
+  selector:
+    app: notice-service
+  ports:
+    - name: http
+      port: 5001
+      targetPort: 5001

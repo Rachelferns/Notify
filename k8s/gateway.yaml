@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: notify
+  labels:
+    app: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: docker.io/rachelferns2005/gateway:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5003
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: notify-config
+                  key: GATEWAY_PORT
+            - name: NOTICE_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: notify-config
+                  key: NOTICE_SERVICE_URL
+            - name: AUTH_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: notify-config
+                  key: AUTH_SERVICE_URL
+          # Gateway exposes GET /, so HTTP probes are safe here.
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5003
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          # Route traffic only after the gateway root route is healthy.
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5003
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          # Small resource envelope suitable for a demo deployment.
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: notify
+spec:
+  selector:
+    app: gateway
+  ports:
+    - port: 5003
+      targetPort: 5003
+  type: LoadBalancer

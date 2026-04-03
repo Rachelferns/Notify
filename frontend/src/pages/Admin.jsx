@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import NoticeList from "../components/NoticeList";
+import API_URL from "../config/api";
 import { CATEGORIES } from "../data/notices";
 import "../styles/Admin.css";
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5003";
 const FORM_INITIAL = { title: "", description: "", category: "General" };
 
 async function parseJsonResponse(res) {
@@ -28,7 +27,7 @@ export default function Admin() {
       const role = (localStorage.getItem("role") || "").trim().toLowerCase();
       console.log("ROLE SENT:", role);
 
-      const res = await fetch(`${API_BASE_URL}/notices`, {
+      const res = await fetch(`${API_URL}/notices`, {
         headers: {
           "Content-Type": "application/json",
           role: role,
@@ -61,7 +60,7 @@ export default function Admin() {
       const role = (localStorage.getItem("role") || "").trim().toLowerCase();
       console.log("ROLE SENT:", role);
 
-      const res = await fetch(`${API_BASE_URL}/notices/${id}`, {
+      const res = await fetch(`${API_URL}/notices/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +81,7 @@ export default function Admin() {
       const role = (localStorage.getItem("role") || "").trim().toLowerCase();
       console.log("ROLE SENT:", role);
 
-      const res = await fetch(`${API_BASE_URL}/notices/${id}/important`, {
+      const res = await fetch(`${API_URL}/notices/${id}/important`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -130,7 +129,7 @@ export default function Admin() {
     };
 
     try {
-      const res = await fetch(`${API_BASE_URL}/notices`, {
+      const res = await fetch(`${API_URL}/notices`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

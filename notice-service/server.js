@@ -4,9 +4,12 @@ const cors = require("cors");
 
 const app = express();
 const port = Number(process.env.PORT) || 5001;
-const mongoUrl =
-  process.env.MONGO_URL ||
-  "mongodb+srv://rachelbferns_db_user:qRFbojTJjjbpBK6m@cluster0.mam9vjt.mongodb.net/noticeDB?retryWrites=true&w=majority";
+const mongoUrl = process.env.MONGO_URL;
+
+if (!mongoUrl) {
+  console.error("MONGO_URL is not set");
+  process.exit(1);
+}
 
 app.use(cors());
 app.use(express.json());
@@ -79,32 +82,6 @@ app.delete("/notices/:id", async (req, res) => {
     res.json({ message: "Deleted" });
   } catch (err) {
     res.status(500).json({ error: "Delete failed" });
-  }
-});
-
-app.put("/notices/:id/important", async (req, res) => {
-  const role = (req.get("role") || "").trim().toLowerCase();
-
-  console.log("ROLE RECEIVED:", role);
-
-  if (role !== "admin") {
-    return res.status(403).json({ error: "Unauthorized" });
-  }
-
-  try {
-    const notice = await Notice.findById(req.params.id);
-
-    if (!notice) {
-      return res.status(404).json({ error: "Not found" });
-    }
-
-    // 🔥 toggle important
-    notice.important = !notice.important;
-    await notice.save();
-
-    res.json(notice);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to update" });
   }
 });
 

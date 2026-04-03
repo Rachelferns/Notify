@@ -20,33 +20,48 @@ app.use((req, res, next) => {
 app.use(
   "/notices",
   createProxyMiddleware({
-    target: "http://notice-service:5001",
+    target: noticeServiceUrl,
     changeOrigin: true,
+    proxyTimeout: 5000,
+    timeout: 5000,
 
     pathRewrite: (path, req) => {
-  console.log("ORIGINAL PATH:", path);
+      console.log("ORIGINAL PATH:", path);
 
-  if (req.method === "DELETE" || req.method === "PUT") {
-    return "/notices" + path; // 🔥 keeps ID
-  }
-
-  return "/notices"; // keep your working GET/POST behavior
-},
+      return path === "/" ? "/notices" : `/notices${path}`;
+    },
 
     on: {
       proxyReq: (proxyReq, req) => {
         console.log("FORWARDING FINAL PATH:", proxyReq.path);
 
-        const role = req.get("role") || req.get("x-user-role");
+        const role = req.get("role");
+        const xUserRole = req.get("x-user-role");
+        const authorization = req.get("authorization");
+
         if (role) {
           proxyReq.setHeader("role", role);
         }
 
-        if (req.body) {
+        if (xUserRole) {
+          proxyReq.setHeader("x-user-role", xUserRole);
+        }
+
+        if (authorization) {
+          proxyReq.setHeader("authorization", authorization);
+        }
+
+        if (req.body && ["POST", "PUT", "PATCH"].includes(req.method)) {
           const bodyData = JSON.stringify(req.body);
           proxyReq.setHeader("Content-Type", "application/json");
           proxyReq.setHeader("Content-Length", Buffer.byteLength(bodyData));
           proxyReq.write(bodyData);
+        }
+      },
+      error: (err, req, res) => {
+        console.error("Notice proxy error:", req.method, req.originalUrl, err.message);
+        if (!res.headersSent) {
+          res.status(502).json({ error: "Notice service unavailable" });
         }
       },
     },

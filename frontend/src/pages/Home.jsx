@@ -1,33 +1,31 @@
 import { useEffect, useState } from "react";
 import FilterBar from "../components/FilterBar";
-import NoticeList from "../components/NoticeList";
+import API_URL from "../config/api";
 import "../styles/Home.css";
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5003";
-
-async function parseJsonResponse(response) {
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || `Request failed with status ${response.status}`);
-  }
-
-  const data = await response.json();
-  console.log("API data:", data);
-  return data;
-}
 
 export default function Home() {
   const [notices, setNotices] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [loading, setLoading] = useState(true);
 
-  const fetchNotices = () => {
-    fetch(`${API_BASE_URL}/notices`)
-      .then((response) => parseJsonResponse(response))
-      .then((data) => setNotices(data))
-      .catch((error) => {
-        console.error("Failed to load notices:", error.message);
-        setNotices([]);
-      });
+  const fetchNotices = async () => {
+    try {
+      const res = await fetch(`${API_URL}/notices`);
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || `Request failed with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log("NOTICES:", data);
+      setNotices(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Failed to load notices:", error.message);
+      setNotices([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -91,7 +89,11 @@ export default function Home() {
       <hr className="home__divider" />
 
       <div className="home__grid">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="home__empty">
+            <div className="home__empty-title">Loading notices...</div>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="home__empty">
             <div className="home__empty-icon">📋</div>
             <div className="home__empty-title">No notices found</div>
@@ -100,7 +102,12 @@ export default function Home() {
             </p>
           </div>
         ) : (
-          <NoticeList notices={filtered} isAdmin={false} />
+          Array.isArray(filtered) && filtered.map((notice) => (
+            <div key={notice._id || `${notice.title}-${notice.date}`} className="notice-card">
+              <h3>{notice.title}</h3>
+              <p>{notice.description}</p>
+            </div>
+          ))
         )}
       </div>
     </main>
