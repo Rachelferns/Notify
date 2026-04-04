@@ -72,3 +72,7 @@ Handling internal vs external networking in Kubernetes
 Fixing service port mismatches
 Debugging container vs service vs ingress layers
 Managing frontend API routing in a clustered environment
+
+
+## 🌍 Live Demo
+http://13.233.149.40:3000
