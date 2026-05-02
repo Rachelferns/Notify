@@ -75,10 +75,17 @@ app.use(
     changeOrigin: true,
     proxyTimeout: 5000,
     timeout: 5000,
+    pathRewrite: { "^/auth": "" },
     on: {
       proxyReq: (proxyReq, req) => {
         const authorization = req.get("authorization");
         if (authorization) proxyReq.setHeader("authorization", authorization);
+        if (req.body && ["POST", "PUT", "PATCH"].includes(req.method)) {
+          const bodyData = JSON.stringify(req.body);
+          proxyReq.setHeader("Content-Type", "application/json");
+          proxyReq.setHeader("Content-Length", Buffer.byteLength(bodyData));
+          proxyReq.write(bodyData);
+        }
       },
       error: (err, req, res) => {
         console.error("Auth proxy error:", req.method, req.originalUrl, err.message);

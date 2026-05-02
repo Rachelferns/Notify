@@ -98,3 +98,100 @@
   color: rgba(255,255,255,0.4);
   letter-spacing: 0.04em;
 }
+
+.navbar__role-pill {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.75);
+}
+
+.navbar__btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.navbar__btn:hover {
+  opacity: 0.85;
+}
+
+.navbar__btn--ghost {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.7);
+}
+
+.navbar__btn--ghost:hover {
+  background: rgba(255,255,255,0.08);
+  opacity: 1;
+}
+
+/* Login Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.modal__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--bg-dark);
+  margin-bottom: 0.5rem;
+}
+
+.modal__hint {
+  font-size: 0.82rem;
+  color: #666;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal__input {
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modal__input:focus {
+  border-color: var(--accent);
+}
+
+.modal__error {
+  font-size: 0.8rem;
+  color: #c0392b;
+}
+
+.modal__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
