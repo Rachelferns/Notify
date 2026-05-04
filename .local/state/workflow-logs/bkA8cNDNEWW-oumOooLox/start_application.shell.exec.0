@@ -1,0 +1,50 @@
+Starting Notice Service on port 5001...
+Starting Auth Service on port 5002...
+Auth service running on 5002
+Notice service running on 5001
+Auth service MongoDB connected
+MongoDB connected
+Starting Gateway on port 5003...
+Gateway running on 5003
+Starting Frontend on port 5000...
+
+> notify-frontend@0.1.0 start
+> react-scripts start
+
+[1G[0K[36mAttempting to bind to HOST environment variable: [33m[1m0.0.0.0[22m[39m[36m[39m
+If this was unintentional, check that you haven't mistakenly set it in your shell.
+Learn more here: [33mhttps://cra.link/advanced-config[39m
+
+(node:959) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:959) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[2J[3J[H[36mStarting the development server...[39m
+[36m[39m
+[2J[3J[H[32mCompiled successfully![39m
+
+You can now view [1mnotify-frontend[22m in the browser.
+
+  [1mLocal:[22m            http://localhost:[1m5000[22m
+  [1mOn Your Network:[22m  http://172.31.83.130:[1m5000[22m
+
+Note that the development build is not optimized.
+To create a production build, use [36mnpm run build[39m.
+
+webpack compiled [1m[32msuccessfully[39m[22m
+Gateway received: GET /notices
+ORIGINAL PATH: /
+FORWARDING FINAL PATH: /notices
+Notice service received: GET /notices
+Gateway received: GET /notices
+ORIGINAL PATH: /
+FORWARDING FINAL PATH: /notices
+Notice service received: GET /notices
+Gateway received: GET /notices
+ORIGINAL PATH: /
+FORWARDING FINAL PATH: /notices
+Notice service received: GET /notices
+Gateway received: GET /notices
+ORIGINAL PATH: /
+FORWARDING FINAL PATH: /notices
+Notice service received: GET /notices
+Gateway received: GET /favicon.ico
